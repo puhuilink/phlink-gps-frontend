@@ -1,5 +1,5 @@
 module.exports = {
   NODE_ENV: '"production"',
   ENV_CONFIG: '"prod"',
-  BASE_API: '"http://pre.phlink.io/pre"'
+  BASE_API: '"http://api.pre.io"'
 }
