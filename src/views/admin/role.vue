@@ -216,15 +216,6 @@ export default {
       deptIds: []
     }
   },
-  watch: {
-    tableData: {
-      handler(newName, oldName) {
-        console.log('obj.a changed', newName)
-      },
-      immediate: true,
-      deep: true
-    }
-  },
   created() {
     this.findTreeData()
     this.roleList()

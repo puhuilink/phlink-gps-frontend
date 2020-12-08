@@ -3,12 +3,12 @@
     v-if="isShow"
     v-loading="socialLoading"
     class="login-container"
-    :element-loading-text="'现在进行'+currentPath+'第三方登录,请稍等'"
+    :element-loading-text="'进行'+currentPath+'第三方登录,请稍等'"
   >
     <div class="login-right">
       <div class="title-container">
         <h3 class="title">
-          PRE 权限后台系统登录
+          PRE 后台系统登录
         </h3>
       </div>
       <el-tabs v-model="activeName" @tab-click="handleClick">
@@ -288,7 +288,7 @@ export default {
   },
   created() {
     this.refreshCaptcha()
-    this.socialLogin()
+    // this.socialLogin()
   },
   mounted() {
     // 自动加载indexs方法

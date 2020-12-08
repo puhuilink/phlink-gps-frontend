@@ -35,8 +35,8 @@ export default {
       let matched = this.$route.matched.filter(item => item.name)
 
       const first = matched[0]
-      if (first && first.name.trim().toLocaleLowerCase() !== 'index'.toLocaleLowerCase()) {
-        matched = [{ path: '/index', meta: { title: '主页' }}].concat(matched)
+      if (first && first.name.trim().toLocaleLowerCase() !== 'Dashboard'.toLocaleLowerCase()) {
+        matched = [{ path: '/dashboard', meta: { title: '主页' }}].concat(matched)
       }
 
       this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
