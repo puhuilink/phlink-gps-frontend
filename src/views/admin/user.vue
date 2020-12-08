@@ -1,114 +1,123 @@
 <template>
-  <div class="app-container">
-    <el-row :gutter="20">
-      <el-col :xs="24" :sm="24" :md="4" :lg="4" :xl="4">
-        <div class="head-container">
-          <el-input
-            v-model="filterText"
-            placeholder="输入部门名称搜索"
-            prefix-icon="el-icon-search"
-            class="filter-item"
-            style="margin-bottom: 20px"
-            size="small"
+  <div class="user">
+    <el-row :gutter="10">
+      <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+        <div class="app-container">
+          <div class="head-container">
+            <el-input
+              v-model="filterText"
+              placeholder="输入部门名称搜索"
+              prefix-icon="el-icon-search"
+              class="filter-item"
+              style="margin-bottom: 20px"
+              size="small"
+            />
+          </div>
+          <el-tree
+            :data="deptData"
+            :props="deptTreeProps"
+            :expand-on-click-node="false"
+            default-expand-all
+            @node-click="handleNodeClick"
           />
         </div>
-        <el-tree
-          :data="deptData"
-          :props="deptTreeProps"
-          :expand-on-click-node="false"
-          default-expand-all
-          @node-click="handleNodeClick"
-        />
       </el-col>
-      <el-col :xs="24" :sm="24" :md="20" :lg="20" :xl="20">
+
+      <el-col :xs="24" :sm="24" :md="18" :lg="18" :xl="18">
         <!-- 查询和其他操作 -->
-        <div class="filter-container">
-          <el-input
-            v-model="query.userName"
-            clearable
-            size="small"
-            class="filter-item"
-            style="width: 200px;"
-            placeholder="请输入用户名"
-            @keyup.enter.native="handleFind"
-          />
-          <el-button class="filter-item" type="primary" icon="el-icon-search" size="small" @click="handleFind">搜索
-          </el-button>
-          <el-button class="filter-item" type="primary" icon="el-icon-refresh" size="small" @click="handleReset">重置
-          </el-button>
-          <el-button class="filter-item" type="primary" size="small" icon="el-icon-plus" @click="handleAdd">添加
-          </el-button>
-        </div>
+        <el-card class="box-card">
+          <div class="filter-container">
+            <el-input
+              v-model="query.userName"
+              clearable
+              size="small"
+              class="filter-item"
+              style="width: 200px;"
+              placeholder="请输入用户名"
+              @keyup.enter.native="handleFind"
+            />
+            <el-button class="filter-item" type="primary" icon="el-icon-search" size="small" @click="handleFind">搜索
+            </el-button>
+            <el-button class="filter-item" type="primary" icon="el-icon-refresh" size="small" @click="handleReset">重置
+            </el-button>
+            <el-button class="filter-item" type="primary" size="small" icon="el-icon-plus" @click="handleAdd">添加
+            </el-button>
+          </div>
 
-        <el-table v-loading="loading" :data="tableData" border style="width: 100%">
-          <el-table-column label="序号" width="60" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.$index + 1 }}</span>
-            </template>
-          </el-table-column>
+          <el-table v-loading="loading" :data="tableData" border style="width: 100%">
+            <el-table-column label="序号" width="60" align="center">
+              <template slot-scope="scope">
+                <span>{{ scope.$index + 1 }}</span>
+              </template>
+            </el-table-column>
 
-          <el-table-column label="用户名" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.username }}</span>
-            </template>
-          </el-table-column>
+            <el-table-column label="用户名" align="center">
+              <template slot-scope="scope">
+                <span>{{ scope.row.username }}</span>
+              </template>
+            </el-table-column>
 
-          <el-table-column label="手机号" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.phone }}</span>
-            </template>
-          </el-table-column>
+            <el-table-column label="手机号" align="center">
+              <template slot-scope="scope">
+                <span>{{ scope.row.phone }}</span>
+              </template>
+            </el-table-column>
 
-          <el-table-column label="邮箱" width="180" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.email }}</span>
-            </template>
-          </el-table-column>
+            <el-table-column label="邮箱" width="180" align="center">
+              <template slot-scope="scope">
+                <span>{{ scope.row.email }}</span>
+              </template>
+            </el-table-column>
 
-          <el-table-column label="部门" align="center">
-            <template slot-scope="scope">
-              <div>{{ scope.row.deptName }}</div>
-            </template>
-          </el-table-column>
+            <el-table-column label="部门" align="center">
+              <template slot-scope="scope">
+                <div>{{ scope.row.deptName }}</div>
+              </template>
+            </el-table-column>
 
-          <el-table-column label="状态" align="center">
-            <template slot-scope="scope">
+            <el-table-column label="状态" align="center">
+              <template slot-scope="scope">
 
-              <div v-for="item in dicts" :key="item.id">
-                <el-tag v-if="scope.row.lockFlag.toString() == item.itemValue" :type="scope.row.lockFlag ? '' : 'info'">{{
-                  item.itemText }}
-                </el-tag>
-              </div>
-            </template>
-          </el-table-column>
+                <div v-for="item in dicts" :key="item.id">
+                  <el-tag v-if="scope.row.lockFlag.toString() == item.itemValue" :type="scope.row.lockFlag == 1 ? 'danger' : 'primary'">{{
+                    item.itemText }}
+                  </el-tag>
+                </div>
+              </template>
+            </el-table-column>
 
-          <el-table-column label="操作" fixed="right" min-width="150" align="center">
-            <template slot-scope="scope">
-              <!--<el-button @click="handRest(scope.row)" type="warning" size="small">重置密码</el-button>-->
-              <el-button size="small" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
-              <el-button size="small" icon="el-icon-delete" type="danger" @click="handleDelete(scope.row)">删除
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+            <el-table-column label="操作" fixed="right" min-width="150" align="center">
+              <template slot-scope="scope">
+                <!--<el-button @click="handRest(scope.row)" type="warning" size="small">重置密码</el-button>-->
+                <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
+                <el-button type="text" icon="el-icon-delete" @click="handleDelete(scope.row)">删除
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
 
-        <!--分页-->
-        <div class="pagination">
-          <el-pagination
-            :current-page.sync="currentPage"
-            :page-size="pageSize"
-            layout="total, prev, pager, next, jumper"
-            :total="total"
-            background
-            @current-change="handleCurrentChange"
-          />
-        </div>
+          <!--分页-->
+          <div class="pagination">
+            <el-pagination
+              :current-page.sync="currentPage"
+              :page-size="pageSize"
+              layout="total, prev, pager, next, jumper"
+              :total="total"
+              background
+              @current-change="handleCurrentChange"
+            />
+          </div>
+        </el-card>
 
         <!-- 添加或修改对话框 -->
-        <el-dialog :title="operation?'新增用户':'编辑用户'" :visible.sync="dialogFormVisible" center>
-          <el-form :model="dataForm" :rules="rules2" label-width="80px" size="small" label-position="right">
-
-            <el-form-item label="用户名" :label-width="formLabelWidth" prop="username" required>
+        <el-dialog
+          :title="operation?'新增用户':'编辑用户'"
+          :visible.sync="dialogFormVisible"
+          :close-on-click-modal="false"
+          @close="dialogClosed"
+        >
+          <el-form ref="ruleForm" :model="dataForm" :rules="rules2" label-width="80px" size="small" label-position="right">
+            <el-form-item label="用户名" :label-width="formLabelWidth" prop="username">
               <el-input v-model="dataForm.username" auto-complete="off" placeholder="请输入用户名" />
             </el-form-item>
 
@@ -125,9 +134,10 @@
                 :data="deptData"
                 :props="deptTreeProps"
                 :prop="dataForm.deptName"
-                :node-key="dataForm.deptId"
+                :node-key="''+dataForm.deptId"
                 :current-change-handle="deptTreeCurrentChangeHandle"
               />
+
             </el-form-item>
 
             <el-form-item label="角色" prop="userRoles" label-width="120px">
@@ -140,15 +150,13 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label="状态" prop="lockFlag" label-width="120px">
+            <el-form-item label="锁定" prop="lockFlag" label-width="120px">
               <el-switch
                 v-model="dataForm.lockFlag"
-                active-color="#13ce66"
-                inactive-color="#ff4949"
-                active-text="正常"
-                active-value="0"
-                inactive-text="锁定"
-                inactive-value="9"
+                active-color="#ff4949"
+                inactive-color="#606266"
+                active-value="1"
+                inactive-value="0"
               />
             </el-form-item>
 
@@ -171,9 +179,7 @@ import PopupTreeInput from '@/components/PopupTreeInput'
 import initDict from '@/mixins/initDict'
 
 export default {
-  components: {
-    PopupTreeInput
-  },
+  components: { PopupTreeInput },
   mixins: [initDict],
   data() {
     // 验证手机号是否合法
@@ -206,8 +212,8 @@ export default {
         avatar: '',
         deptId: '',
         deptName: '',
-        email: 'lihaodongmail@163.com',
-        phone: '17521296869',
+        email: '',
+        phone: '',
         lockFlag: '' + 0,
         roleList: []
       },
@@ -216,21 +222,19 @@ export default {
         label: 'name',
         children: 'children'
       },
-      value5: '100',
       filterText: '',
       loading: false,
       jobName: '',
       rules2: {
-        username: [{ required: true, message: '请输入用户名', trigger: 'blur' }, {
+        username: [{ required: true, message: '输入用户名', trigger: 'blur' }, {
           pattern: /^[a-zA-Z0-9_]{4,8}$/,
           message: '以字母开头，长度在4-8之间， 只能包含字符、数字和下划线'
         }],
-        phone: [{ required: true, message: '请输入手机号', trigger: 'blur' }, { validator: checkTel, trigger: 'change' }],
-        email: [{ required: true, message: '请输入邮箱', trigger: 'blur' }, {
+        phone: [{ required: true, message: '输入手机号', trigger: 'blur' }, { validator: checkTel, trigger: 'change' }],
+        email: [{ required: true, message: '输入邮箱', trigger: 'blur' }, {
           pattern: /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/, message: '输入邮箱不合法'
         }]
       }
-
     }
   },
   created() {
@@ -241,6 +245,9 @@ export default {
     this.getDict('用户状态')
   },
   methods: {
+    dialogClosed() {
+      this.$refs.ruleForm.resetFields()
+    },
     // 加载用户角色信息
     findUserRoles: function() {
       const params = new URLSearchParams()
@@ -292,8 +299,8 @@ export default {
         deptId: '',
         deptName: '',
         jobId: '',
-        email: 'lihaodongmail@163.com',
-        phone: '17521296869',
+        email: '',
+        phone: '',
         lockFlag: '' + 0,
         roleList: []
       }
@@ -302,7 +309,6 @@ export default {
     handleEdit: function(row) {
       this.dialogFormVisible = true
       this.operation = false
-      // this.dataForm = row
       this.dataForm = Object.assign({}, row)
       this.dataForm.jobId = row.jobId
       // this.getJobs(this.dataForm.jobId)
@@ -318,63 +324,59 @@ export default {
     // 密码重置 todo
     handRest: function(row) {
       const that = this
-      this.$confirm('此操作将会将该用户密码重置, 是否继续?', '提示', {
+      this.$confirm('此操作将会重置用户密码, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
+      }).then(() => {
+        restPass(row.userId).then(response => {
+          if (response.data.code === 200) {
+            that.$message({
+              type: 'success',
+              message: '重置密码成功'
+            })
+          } else {
+            that.$message({
+              type: 'error',
+              message: response.data.msg
+            })
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
-        .then(() => {
-          restPass(row.userId).then(response => {
-            if (response.data.code === 200) {
-              that.$message({
-                type: 'success',
-                message: '重置密码成功'
-              })
-            } else {
-              that.$message({
-                type: 'error',
-                message: response.data.msg
-              })
-            }
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
     },
     // 删除用户
     handleDelete: function(row) {
       const that = this
-      this.$confirm('此操作将该管理员删除, 是否继续?', '提示', {
+      this.$confirm('此操作将 ' + row.username + ' 删除, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
+      }).then(() => {
+        deleteUser(row.userId).then(response => {
+          if (response.data.code === 200) {
+            this.$message({
+              type: 'success',
+              message: '操作成功'
+            })
+            that.adminList()
+          } else {
+            this.$message({
+              type: 'error',
+              message: response.data.msg
+            })
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
-        .then(() => {
-          deleteUser(row.userId).then(response => {
-            if (response.data.code === 200) {
-              this.$message({
-                type: 'success',
-                message: '操作成功'
-              })
-              that.adminList()
-            } else {
-              this.$message({
-                type: 'error',
-                message: response.data.msg
-              })
-            }
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
     },
     handleCurrentChange: function(val) {
       this.currentPage = val
@@ -392,8 +394,7 @@ export default {
       }
       this.dataForm.roleList = userRoles
 
-      console.log(this.dataForm)
-      debugger
+      // console.log(this.dataForm)
       if (!this.operation) {
         // 编辑用户
         editUser(this.dataForm).then(response => {
@@ -439,5 +440,26 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+  .user {
+    margin: 10px;
+
+    .app-container {
+      margin: 0 0 10px 0 !important;
+    }
+  }
+
+  .el-card.is-always-shadow {
+    box-shadow: none;
+  }
+
+  .el-card {
+    border-radius: 0;
+    border: none;
+
+    .el-card__header {
+      padding: 10px 20px !important;
+      border-bottom: 1px solid #f1f1f1 !important;
+    }
+  }
 </style>

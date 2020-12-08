@@ -2,16 +2,8 @@
   <div class="wel-contailer">
     <div class="banner-text">
       <div style="text-align: center;">
-        <img src="https://gitee.com/li_haodong/picture_management/raw/master/pic/WechatIMG9.png" height="256" width="256" alt="pre系统logo">
+        <img src="" height="256" width="256" alt="logo">
       </div>
-      <span>
-        <a href="https://gitee.com/li_haodong/pre" target="_blank">
-          <img src="https://img.shields.io/badge/Pre-1.1-green.svg" alt="Build Status">
-        </a>
-        <img src="https://img.shields.io/badge/spring--boot-2.1.6.RELEASE-green.svg" alt="spring-boot">
-        <img src="https://img.shields.io/badge/security-5.1.5-blue.svg" alt="security">
-        <img src="https://img.shields.io/badge/mybatis--plus-3.1.2-blue.svg" alt="mybatis-plus">
-      </span>
       <br>
       <span>
         <el-collapse v-model="activeNames">
@@ -37,7 +29,6 @@
           <el-collapse-item title="基本功能" name="4">
             <div>用户管理 、角色管理 、角色管理 、菜单管理 、部门管理 、社交账号管理</div>
             <div>岗位管理 、字典管理 、操作日志 、异常日志 、代码生成</div>
-            <div><a href="https://gitee.com/li_haodong/pre" target="_blank">详细介绍Pre </a></div>
           </el-collapse-item>
         </el-collapse>
       </span>

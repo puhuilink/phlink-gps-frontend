@@ -1,14 +1,14 @@
 <template>
   <div class="dept">
     <el-row :gutter="10">
-      <el-col :xs="24" :sm="12">
+      <el-col :xs="24" :sm="6">
         <div class="app-container">
           <div class="filter-container">
             <el-button-group>
-              <el-button type="primary" plain @click="handleAdd">
+              <el-button type="primary" size="small" icon="el-icon-plus" @click="handleAdd">
                 添加
               </el-button>
-              <el-button type="primary" plain @click="handleDelete">
+              <el-button type="primary" size="small" icon="el-icon-delete" @click="handleDelete">
                 删除
               </el-button>
             </el-button-group>
@@ -17,11 +17,12 @@
             :data="tableTreeData"
             :props="popupTreeProps"
             :default-expand-all="true"
+            :expand-on-click-node="false"
             @node-click="handleNodeClick"
           />
         </div>
       </el-col>
-      <el-col :xs="24" :sm="12">
+      <el-col :xs="24" :sm="18">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>{{ deptForm.deptId === '' ? '添加' : '编辑' }}</span>
@@ -36,6 +37,7 @@
                   :node-key="''+deptForm.parentId"
                   :current-change-handle="handleTreeSelectChange"
                 />
+
               </el-form-item>
               <el-form-item label="部门名称" prop="name">
                 <el-input v-model="deptForm.name" />
@@ -92,7 +94,8 @@ export default {
         children: 'children'
       },
       editLoading: false,
-      deptName: ''
+      deptName: '',
+      defaultCheckedKeys: []
     }
   },
   created() {
@@ -101,7 +104,6 @@ export default {
   methods: {
     parseTime,
     handleNodeClick(data) {
-      console.log(data)
       this.deptForm = data
       this.$refs.deptForm.clearValidate()
     },
@@ -115,7 +117,7 @@ export default {
     handleAdd: function() {
       if (this.deptForm.deptId === 0) {
         this.$message({
-          message: '请先选择一个节点哦',
+          message: '请先选择一个节点',
           type: 'warning'
         })
       } else {
@@ -171,7 +173,6 @@ export default {
               })
             })
           } else {
-            console.log(this.deptForm)
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
               this.editLoading = true
               saveDept(this.deptForm).then((res) => {
@@ -198,7 +199,7 @@ export default {
           type: 'warning'
         })
       } else {
-        this.$confirm('此操作将把部门删除, 是否继续?', '提示', {
+        this.$confirm('此操作将把部门删除,请先检查部门下面是否有其他人员后继续!', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'

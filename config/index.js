@@ -14,12 +14,11 @@ module.exports = {
           '^/pre': '/',//重写,
         }
       }
-
     },
 
     // 本地开发使用
     host: 'localhost',
-    port: 9527,
+    port: 8081,
     autoOpenBrowser: true,
     errorOverlay: true,
     notifyOnErrors: false,

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-popover ref="popover" :placement="placement" trigger="click">
+    <el-popover ref="popover" :placement="placement" trigger="click" :width="width">
       <el-tree
         ref="popupTree"
         :data="data"
@@ -22,11 +22,11 @@ export default {
   props: {
     data: {
       type: Array,
-      default: []
+      default: function() { return [] }
     },
     props: {
       type: Object,
-      default: {}
+      default: function() { return {} }
     },
     prop: {
       type: String,
@@ -42,7 +42,7 @@ export default {
     },
     placement: {
       type: String,
-      default: 'right-start'
+      default: 'bottom'
     },
     defaultExpandAll: {
       type: Boolean,
@@ -51,6 +51,12 @@ export default {
     currentChangeHandle: {
       type: Function,
       default: null
+    },
+    width: {
+      type: Number,
+      default() {
+        return 400
+      }
     }
   }
 }

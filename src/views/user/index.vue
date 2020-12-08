@@ -1,43 +1,45 @@
 <template>
-  <div class="app-container">
+  <div class="user">
     <el-row :gutter="10">
-      <el-col :xs="24" :sm="12">
-        <el-card class="user-center">
-          <div slot="header" class="clearfix">
-            <span>关于我</span>
-          </div>
-          <div class="user-profile">
-            <div class="box-center">
-              <pan-thumb :image="avatar" :height="'100px'" :width="'100px'" :hoverable="false">
-                <el-link type="primary" class="change-avatar" @click="dialogVisible = true">更换头像</el-link>
-              </pan-thumb>
+      <el-col :xs="24" :sm="8">
+        <div class="app-container">
+          <el-card shadow="never" class="user-center">
+            <div slot="header" class="clearfix">
+              <span>关于我</span>
             </div>
-            <div class="box-center">
-              <div class="user-name text-center">{{ user.username }}</div>
-              <div class="user-role text-center text-muted">
-                <span>{{ user.deptName ? user.deptName : '没有' }}</span> · <span>{{ user.roleName ? user.roleName : '没有' }}</span>
+            <div class="user-profile">
+              <div class="box-center">
+                <pan-thumb :image="avatar" :height="'100px'" :width="'100px'" :hoverable="false">
+                  <el-link type="primary" class="change-avatar" @click="dialogVisible = true">更换头像</el-link>
+                </pan-thumb>
               </div>
-            </div>
-          </div>
-          <div class="user-bio">
-            <div class="user-education user-bio-section">
-              <div class="user-bio-section-header"><el-icon class="el-icon-connection" /><span>第三方账号</span></div>
-              <div class="user-bio-section-body">
-                <div class="text-muted">
-                  <template v-for="(l, index) in logo">
-                    <div :key="index" class="logo-wrapper">
-                      <img v-if="l.bind" :src="resolveLogo(l.img)" :class="{ 'radius': l.radius }" alt="" title="1" @click="unbind(l.name)">
-                      <img v-else :src="resolveLogo(l.img)" :class="{ 'radius': l.radius }" alt="" title="2" class="unbind" @click="bind(l.name)">
-                    </div>
-                  </template>
+              <div class="box-center">
+                <div class="user-name text-center">{{ user.username }}</div>
+                <div class="user-role text-center text-muted">
+                  <span>{{ user.deptName ? user.deptName : '没有' }}</span> · <span>{{ user.roleName ? user.roleName : '没有' }}</span>
                 </div>
               </div>
             </div>
-          </div>
-        </el-card>
+            <div class="user-bio">
+              <div class="user-education user-bio-section">
+                <div class="user-bio-section-header"><el-icon class="el-icon-connection" /><span>第三方账号</span></div>
+                <div class="user-bio-section-body">
+                  <div class="text-muted">
+                    <template v-for="(l, index) in logo">
+                      <div :key="index" class="logo-wrapper">
+                        <img v-if="l.bind" :src="resolveLogo(l.img)" :class="{ 'radius': l.radius }" alt="" title="1" @click="unbind(l.name)">
+                        <img v-else :src="resolveLogo(l.img)" :class="{ 'radius': l.radius }" alt="" title="2" class="unbind" @click="bind(l.name)">
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </el-card>
+        </div>
       </el-col>
-      <el-col :xs="24" :sm="12">
-        <el-card class="user-center">
+      <el-col :xs="24" :sm="16">
+        <el-card shadow="never" class="user-center">
           <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="个人信息" name="first">
               <div class="user" style="width: 600px">
@@ -415,6 +417,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .user {
+    margin: 10px;
+
+    .app-container {
+      margin: 0 0 10px 0 !important;
+      padding: 0px !important;
+    }
+  }
 
   .user-center{
     height: 440px;

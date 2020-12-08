@@ -200,6 +200,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+  .el-drawer__header span:focus {
+    outline: 0!important;
+  }
 
 </style>

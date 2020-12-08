@@ -31,7 +31,7 @@ const permission = {
 // 遍历后台传来的路由字符串，转换为组件对象
 function filterAsyncRouter(asyncRouterMap) {
   return asyncRouterMap.filter(route => {
-    console.log(route.component)
+    // console.log(route.component)
     if (route.component) {
       // Layout组件特殊处理
       if (route.component === 'Layout') {

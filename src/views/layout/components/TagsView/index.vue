@@ -195,7 +195,6 @@ export default {
     border-bottom: 1px solid #f1f1f1;
     .tags-view-wrapper {
       .tags-view-item {
-        display: inline-block;
         position: relative;
         cursor: pointer;
         height: 34px;

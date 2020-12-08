@@ -216,9 +216,7 @@
           <span class="" @click="gotoRegister()">注册账户</span>
         </div>
       </div>
-
     </div>
-
   </div>
 </template>
 
@@ -343,7 +341,7 @@ export default {
     },
     refreshCaptcha: function() {
       getImgCode().then(res => {
-        console.log(res)
+        // console.log(res)
         this.src = res.data.data.img
         this.loginForm.key = res.data.data.key
       })
@@ -426,8 +424,7 @@ export default {
     justify-content: center;
     align-items: center;
     height: 100%;
-    /*background-image: url(https://img2018.cnblogs.com/blog/1211637/201908/1211637-20190809112720089-1507550740.png);*/
-    background-image: url('../../assets/63048029b07252112f0033e8e3c52865.jpg');
+    background-image: url('');
     /*background: red;*/
     background-size: cover;
 
@@ -435,7 +432,7 @@ export default {
       width: 30%;
       padding: 50px;
       border-radius: 6px;
-      background: #ffffff;
+      background: #ebeef5;
 
       .title {
         margin: 0 auto 30px auto;

@@ -3,31 +3,21 @@
   <div class="app-container">
     <!-- 查询和其他操作 -->
     <div class="filter-container" style="margin: 10px 0 10px 0;">
-      <el-row :gutter="10">
-        <el-col :span="6">
-          <div class="grid-content bg-purple">
-            <el-input
-              v-model="query.roleName"
-              clearable
-              class="filter-item"
-              style="width: 200px;"
-              size="small"
-              placeholder="请输入角色名称"
-              @keyup.enter.native="handleFind"
-            />
-          </div>
-        </el-col>
-        <el-col :span="9">
-          <div class="grid-content bg-purple">
-            <el-button class="filter-item" size="small" type="primary" icon="el-icon-search" @click="handleFind">搜索
-            </el-button>
-            <el-button class="filter-item" size="small" type="primary" icon="el-icon-refresh" @click="handleReset">重置
-            </el-button>
-            <el-button class="filter-item" size="small" type="primary" icon="el-icon-plus" @click="handleAdd">添加
-            </el-button>
-          </div>
-        </el-col>
-      </el-row>
+      <el-input
+        v-model="query.roleName"
+        clearable
+        class="filter-item"
+        style="width: 200px;"
+        size="small"
+        placeholder="请输入角色名称"
+        @keyup.enter.native="handleFind"
+      />
+      <el-button class="filter-item" size="small" type="primary" icon="el-icon-search" @click="handleFind">搜索
+      </el-button>
+      <el-button class="filter-item" size="small" type="primary" icon="el-icon-refresh" @click="handleReset">重置
+      </el-button>
+      <el-button class="filter-item" size="small" type="primary" icon="el-icon-plus" @click="handleAdd">添加
+      </el-button>
     </div>
     <el-table v-loading="loading" :data="tableData" border style="width: 100%">
       <el-table-column type="selection" />
@@ -70,9 +60,13 @@
     </el-table>
 
     <!-- 添加或修改对话框 -->
-    <el-dialog :title="title" :visible.sync="dialogFormVisible">
-      <el-form ref="form" :model="form" :rules="dataRule">
-
+    <el-dialog
+      :title="title"
+      :visible.sync="dialogFormVisible"
+      :close-on-click-modal="false"
+      @close="dialogClosed"
+    >
+      <el-form ref="ruleForm" :model="form" :rules="dataRule">
         <el-form-item label="角色名称" :label-width="formLabelWidth" prop="roleName">
           <el-input v-model="form.roleName" auto-complete="off" placeholder="请输入角色名称" />
         </el-form-item>
@@ -86,14 +80,32 @@
         </el-form-item>
 
         <el-form-item label="数据范围" :label-width="formLabelWidth">
-          <el-select v-model="form.dsType" placeholder="请选择数据范围" style="width: 100%" @change="changeScope">
-            <el-option
-              v-for="item in dateScopes"
-              :key="item.id"
-              :label="item.des"
-              :value="item.id"
-            />
-          </el-select>
+          <el-row>
+            <el-col :span="22">
+              <el-select v-model="form.dsType" placeholder="请选择数据范围" style="width: 100%" @change="changeScope">
+                <el-option
+                  v-for="item in dateScopes"
+                  :key="item.id"
+                  :label="item.des"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-col>
+            <el-col :span="2" class="icon-list__tips">
+              <el-tooltip placement="top" effect="light" style="padding: 10px;">
+                <div slot="content">
+                  <p>数据权限范围类型：</p>
+                  <p>1.&nbsp;<b>[全部]</b> 最高权限，可查看所有数据</p>
+                  <p>2.&nbsp;<b>[本级]</b> 只能查看所处组织机构数据</p>
+                  <p>3.&nbsp;<b>[本级以及子级]</b> 只能查看所在机构和所有下级机构数据</p>
+                  <p>4.&nbsp;<b>[自定义]</b> 在组织机构树上选择数据权限</p>
+                  <p>5.&nbsp;单用户多角色下，系统会选择其中权限最高(全部 > 自定义 > 本级以及子级 > 本级)</p>
+                  <p>&nbsp;&nbsp;&nbsp;&nbsp;的角色作为用户的数据权限</p>
+                </div>
+                <i class="el-icon-warning" />
+              </el-tooltip>
+            </el-col>
+          </el-row>
         </el-form-item>
 
         <el-form-item v-if="form.dsType === 4" label="数据权限" :label-width="formLabelWidth">
@@ -204,11 +216,23 @@ export default {
       deptIds: []
     }
   },
+  watch: {
+    tableData: {
+      handler(newName, oldName) {
+        console.log('obj.a changed', newName)
+      },
+      immediate: true,
+      deep: true
+    }
+  },
   created() {
     this.findTreeData()
     this.roleList()
   },
   methods: {
+    dialogClosed() {
+      this.$refs.ruleForm.resetFields()
+    },
     parseTime,
     // 获取角色
     roleList: function() {
@@ -292,11 +316,11 @@ export default {
     },
 
     // 编辑角色
-    handleEdit: function(row) {
+    handleEdit(row) {
       this.dialogFormVisible = true
       this.isEditForm = true
       this.title = '编辑角色'
-      this.form = row
+      this.form = JSON.parse(JSON.stringify(row))
       this.handleRoleSelectChange(row.roleId)
       this.deptIds = []
       if (this.form.dsType === 4) {
@@ -309,7 +333,6 @@ export default {
 
     // 角色选择改变监听
     handleRoleSelectChange(id) {
-      console.log(id)
       this.selectRole.id = id
       findRoleMenus(id).then((res) => {
         this.$refs.menuTree.setCheckedNodes(res.data.data)
@@ -374,48 +397,43 @@ export default {
       // 得到选中树的角色id和菜单id
       this.form.roleMenus = roleMenus
       // 得到部门ids
-      this.$refs['form'].validate((valid) => {
-        if (valid) {
-          if (this.isEditForm) {
-            updateRole(this.form).then(response => {
-              if (response.data.code === 200) {
-                this.$message({
-                  type: 'success',
-                  message: '操作成功'
-                })
-                this.dialogFormVisible = false
-                this.roleList()
-              } else {
-                this.$message({
-                  type: 'error',
-                  message: response.data
-                })
-              }
+      if (this.isEditForm) {
+        updateRole(this.form).then(response => {
+          if (response.data.code === 200) {
+            this.$message({
+              type: 'success',
+              message: '操作成功'
             })
+            this.dialogFormVisible = false
+            this.roleList()
           } else {
-            addRole(this.form).then(response => {
-              if (response.data.code === 200) {
-                this.$message({
-                  type: 'success',
-                  message: '操作成功'
-                })
-                this.dialogFormVisible = false
-                this.roleList()
-              } else {
-                this.$message({
-                  type: 'error',
-                  message: response.data.msg
-                })
-              }
+            this.$message({
+              type: 'error',
+              message: response.data
             })
           }
-        }
-      })
+        })
+      } else {
+        addRole(this.form).then(response => {
+          if (response.data.code === 200) {
+            this.$message({
+              type: 'success',
+              message: '操作成功'
+            })
+            this.dialogFormVisible = false
+            this.roleList()
+          } else {
+            this.$message({
+              type: 'error',
+              message: response.data.msg
+            })
+          }
+        })
+      }
     },
     // 加载部门列表
     findDeptTree: function() {
       getDeptTree().then((res) => {
-        console.log(res)
         this.deptData = res.data.data
       })
     },

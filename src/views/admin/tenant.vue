@@ -85,6 +85,7 @@
       width="40%"
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
+      @close="dialogClosed"
     >
       <el-form
         ref="dataForm"
@@ -186,6 +187,9 @@ export default {
     this.getTenantList()
   },
   methods: {
+    dialogClosed() {
+      this.$refs.dataForm.resetFields()
+    },
     parseTime,
     getTenantList: function() {
       this.loading = true

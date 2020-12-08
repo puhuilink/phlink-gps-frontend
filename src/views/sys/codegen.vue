@@ -34,7 +34,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" header-align="center" fixed="right" min-width="150" align="center">
+      <el-table-column label="操作" header-align="center" fixed="right" min-width="70" align="center">
         <template slot-scope="scope">
           <el-button type="primary" size="small" icon="el-icon-view" @click="handleView(scope.row)">表详情</el-button>
           <el-button type="danger" size="small" icon="el-icon-check" @click="handleCodeGen(scope.row)">代码生成</el-button>
