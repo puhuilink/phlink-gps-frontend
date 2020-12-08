@@ -36,6 +36,7 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
 
+    publicPath: "/pre/",
     productionSourceMap: false,
     devtool: 'source-map',
     productionGzip: false,
