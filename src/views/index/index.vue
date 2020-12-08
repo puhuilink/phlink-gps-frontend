@@ -1,5 +1,5 @@
 <template>
-  <div class="wel-contailer">
+  <div class="app-container">
     <div class="banner-text">
       <span>
         <el-collapse v-model="activeNames">
@@ -52,9 +52,6 @@ export default {
 </script>
 
 <style scoped="scoped" lang="scss">
-  .wel-contailer {
-    position: relative;
-  }
 
   .banner-text {
     position: relative;
