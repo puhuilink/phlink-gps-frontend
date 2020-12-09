@@ -334,7 +334,18 @@ export default {
     handleEdit: function(row) {
       this.isEditForm = true
       this.dialogVisible = true
-      this.dataForm = JSON.parse(JSON.stringify(row))
+      const { menuId, type, name, parentId, parentName, isFrame, component, path, perms, sort, icon } = row
+      this.dataForm.menuId = menuId
+      this.dataForm.type = type
+      this.dataForm.name = name
+      this.dataForm.parentId = parentId
+      this.dataForm.component = component
+      this.dataForm.parentName = parentName
+      this.dataForm.isFrame = '' + isFrame
+      this.dataForm.path = path
+      this.dataForm.perms = perms
+      this.dataForm.sort = sort
+      this.dataForm.icon = icon
     },
     // 菜单树选中
     handleTreeSelectChange(data) {
