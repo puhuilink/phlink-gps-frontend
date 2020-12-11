@@ -1,101 +1,129 @@
 <template>
   <div class="app-container">
-    <div class="banner-text">
-      <span>
-        <el-collapse v-model="activeNames">
-          <el-collapse-item title="" name="1">
-            <div>基于Spring Boot 2.1.6.RELEASE</div>
-            <div>基于Spring Security 5.1.5</div>
-          </el-collapse-item>
-          <el-collapse-item title="" name="2">
-            <div>支持docker部署</div>
-          </el-collapse-item>
-          <el-collapse-item title="" name="3">
-            <div>支持第三方社交登录</div>
-          </el-collapse-item>
-          <el-collapse-item title="" name="4">
-            <div>前后端分离架构</div>
-            <div>Jwt Token 鉴权机制</div>
-            <div>代码注释丰富，极其简洁风格，上手快易理解</div>
-            <div>采用Restfull API 规范开发</div>
-            <div>统一异常拦截，友好的错误提示</div>
-            <div>基于注解 + Aop切面实现全方位日记记录系统</div>
-            <div>基于Mybatis拦截器 + 策略模式实现数据权限控制</div>
-          </el-collapse-item>
-          <el-collapse-item title="" name="4">
-            <div>用户管理 、角色管理 、角色管理 、菜单管理 、部门管理 、社交账号管理</div>
-            <div>岗位管理 、字典管理 、操作日志 、异常日志 、代码生成</div>
-          </el-collapse-item>
-        </el-collapse>
-      </span>
-    </div>
+    <el-row>
+      <el-col :span="6">
+        <fence
+          :add-data="saveData"
+          :edit-data="editData"
+          @transferfence="doClick"
+          @delfence="doClear"
+        />
+      </el-col>
+      <el-col :span="18">
+        <baidu-map v-bind="mapOptions" :map-click="false" :style="select" class="map-container" @ready="handler">
+          <bm-polygon-ex
+            :polygon-data="polygonData"
+            @drawover="callbakAdd"
+            @modifyover="callbakModify"
+            @delete="callbakDelete"
+          />
+          <bm-city-list anchor="BMAP_ANCHOR_TOP_LEFT" />
+        </baidu-map>
+      </el-col>
+    </el-row>
   </div>
 </template>
-
 <script>
+import {
+  BaiduMap,
+  BmCityList
+} from 'vue-baidu-map/components'
+import BmPolygonEx from './components/PolygonEx'
+import Fence from './components/fence'
+import { wgs84togcj02, gcj02tobd09 } from '@/utils/coord-transform'
+
 export default {
-  name: 'Index',
+  components: { BaiduMap, BmPolygonEx, BmCityList, Fence },
   data() {
     return {
-      activeNames: ['1', '2', '3', '4'],
-      DATA: [],
-      text: '',
-      actor: '',
-      count: 0,
-      isText: false
+      map: {},
+      saveData: [],
+      editData: [],
+      mapOptions: {
+        ak: '7BvqXd0SNk9NVMTz1DkCAmxO1dhausVe',
+        center: {
+          lng: 116.405994,
+          lat: 39.914935
+        },
+        scrollWheelZoom: true,
+        zoom: 20
+      },
+      polygonData: [{
+        path: [],
+        value: 0
+      }],
+      select: { width: '100%', height: '' }
+
     }
   },
-
+  mounted() {
+    this.selectStyle()
+  },
   methods: {
+    selectStyle() {
+      this.select.height = (window.innerHeight) - 100 + 'px'
+    },
+    handler({ BMap, map }) {
+      // TODO 现在支持一个多边形围栏
+      this.setViewPort(map, this.polygonData[0].path)
+      this.map = map
+    },
+    doClick(path) {
+      console.log('%c doClick', 'color: blue;')
+      this.polygonData = [{
+        path: path,
+        value: 0
+      }]
+      this.setViewPort(this.map, path)
+    },
+    setViewPort(map, path) {
+      // 调用百度地图方法设置坐标数组居中和缩放
+      if (path.length > 0) {
+        const viewPort = map.getViewport(path.map(p => {
+          return new BMap.Point(p.lng, p.lat)
+        }))
+        map.centerAndZoom(viewPort.center, viewPort.zoom)
+      } else {
+        // 没有坐标就显示在中国
+        map.centerAndZoom(new BMap.Point(116.405994, 39.914935), 20)
+      }
+    },
+    doClear() {
+      this.polygonData = [{
+        path: [],
+        value: 0
+      }]
+    },
+    callbakAdd(e) {
+      console.log('%c map callbakAdd', 'color: green;')
+      this.saveData = e.path
+    },
+    callbakModify(e) {
+      console.log('%c map callbakModify', 'color: green;')
+      console.log(e)
+      this.editData = e.path
+    },
+    callbakDelete(e) {
+      console.log('%c map callbakDelete', 'color: green;')
+      console.log(e)
+    }
   }
 }
 </script>
-
-<style scoped="scoped" lang="scss">
-
-  .banner-text {
-    position: relative;
-    padding: 0 20px;
-    font-size: 20px;
-    text-align: center;
-    color: #333;
-  }
-
-  .banner-img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.8;
-    display: none;
-  }
-
-  .actor {
-    height: 250px;
-    overflow: hidden;
-    font-size: 18px;
-    color: #333;
-  }
-
-  .actor:after {
-    content: '';
-    width: 3px;
-    height: 25px;
-    vertical-align: -5px;
-    margin-left: 5px;
-    background-color: #333;
-    display: inline-block;
-    animation: blink 0.4s infinite alternate;
-  }
-
-  .typeing:after {
-    animation: none;
-  }
-
-  @keyframes blink {
-    to {
-      opacity: 0;
+<style rel="stylesheet/scss" lang="scss" scoped>
+  .map-container {
+    >>> .anchorBL,
+    >>> .anchorTR,
+    >>> .BMap_zlHolder,
+    >>> [id^=PanoramaFlashWraperTANGRAM] {
+        display: none;
+        visibility: hidden;
     }
+  }
+
+</style>
+<style>
+  .citylist_popup_main .city_content_top {
+    height: 40px!important;
   }
 </style>
