@@ -12,7 +12,7 @@
         placeholder="请输入角色名称"
         @keyup.enter.native="handleFind"
       />
-      <el-button class="filter-item" size="small" type="primary" icon="el-icon-search" @click="handleFind">搜索
+      <el-button class="filter-item" size="small" type="primary" icon="el-icon-search" plain @click="handleFind">搜索
       </el-button>
       <el-button class="filter-item" size="small" type="primary" icon="el-icon-refresh" @click="handleReset">重置
       </el-button>
@@ -45,13 +45,13 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="创建时间" width="160" align="center" prop="createTime">
+      <el-table-column label="创建时间" width="200" align="center" prop="createTime">
         <template slot-scope="scope">
           <span>{{ scope.row.createTime }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" fixed="right" min-width="150" align="center">
+      <el-table-column label="操作" fixed="right" min-width="100" align="center">
         <template slot-scope="scope">
           <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
           <el-button type="text" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>

@@ -36,7 +36,7 @@
               placeholder="请输入用户名"
               @keyup.enter.native="handleFind"
             />
-            <el-button class="filter-item" type="primary" icon="el-icon-search" size="small" @click="handleFind">搜索
+            <el-button class="filter-item" type="primary" icon="el-icon-search" size="small" plain @click="handleFind">搜索
             </el-button>
             <el-button class="filter-item" type="primary" icon="el-icon-refresh" size="small" @click="handleReset">重置
             </el-button>

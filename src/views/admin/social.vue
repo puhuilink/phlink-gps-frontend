@@ -14,7 +14,7 @@
       <el-select v-model="query.providerId" clearable placeholder="类型" class="filter-item" size="small" style="width: 130px">
         <el-option v-for="item in queryTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
       </el-select>
-      <el-button class="filter-item" size="mini" type="primary" icon="el-icon-search" @click="handleFind">查找</el-button>
+      <el-button class="filter-item" size="mini" type="primary" icon="el-icon-search" plain @click="handleFind">搜索</el-button>
     </div>
 
     <el-table v-loading="loading" :data="tableData" style="width: 100%" size="mini">

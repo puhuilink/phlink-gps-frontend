@@ -11,7 +11,7 @@
         placeholder="请输入租户名称"
         @keyup.enter.native="handleFind"
       />
-      <el-button class="filter-item" size="small" type="primary" icon="el-icon-search" @click="handleFind">查询
+      <el-button class="filter-item" size="small" type="primary" icon="el-icon-search" @click="handleFind">搜索
       </el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-refresh" size="small" @click="handleReset">重置
       </el-button>

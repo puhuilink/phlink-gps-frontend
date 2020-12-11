@@ -17,7 +17,7 @@
             <div>前后端分离架构</div>
             <div>Jwt Token 鉴权机制</div>
             <div>代码注释丰富，极其简洁风格，上手快易理解</div>
-            <div>采用Restfull API 规范开发</div>
+            <div>采用Restful API 规范开发</div>
             <div>统一异常拦截，友好的错误提示</div>
             <div>基于注解 + Aop切面实现全方位日记记录系统</div>
             <div>基于Mybatis拦截器 + 策略模式实现数据权限控制</div>

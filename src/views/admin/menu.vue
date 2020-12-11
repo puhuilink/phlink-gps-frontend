@@ -11,7 +11,7 @@
         size="small"
         placeholder="请输入菜单"
       />
-      <el-button class="filter-item" size="small" type="primary" icon="el-icon-search" @click="handleFind">查找</el-button>
+      <el-button class="filter-item" size="small" type="primary" icon="el-icon-search" plain @click="handleFind">搜索</el-button>
       <el-button class="filter-item" size="small" type="primary" icon="el-icon-plus" @click="handleAdd">添加菜单</el-button>
     </div>
 
