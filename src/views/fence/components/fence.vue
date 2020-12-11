@@ -10,7 +10,7 @@
         </el-input>
       </el-badge>
 
-      <div v-infinite-scroll="getFencePageList">
+      <div v-infinite-scroll="getFencePageList" infinite-scroll-immediate="false">
         <div
           v-for="(item, index) of fenceList"
           :key="item.id"
@@ -78,8 +78,8 @@ export default {
       addNameInput: '',
       addFenceFalg: false,
       iotFencePageParam: {
-        current: 0,
-        size: 5
+        current: 1,
+        size: 10
       }
     }
   },
@@ -95,21 +95,12 @@ export default {
       })
     }
   },
+  mounted() {
+    this.getFencePageList()
+  },
   methods: {
     deleteFence(item) {
       // 查看告警配置中是否有围栏信息
-      const param = {
-        fenceId: item.id,
-        pageIndex: 0,
-        pageSorts: [
-          {
-            column: '',
-            asc: true
-          }
-        ],
-        pageSize: 10,
-        keyword: ''
-      }
       this.$confirm('您确定要删除 ' + item.name + ' ?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -156,9 +147,14 @@ export default {
     },
     resetFencePageList() {
       this.show = false
-      this.iotFencePageParam.current = 1
-      // this.iotFencePageParam.name = this.fenceName
-      getFence(this.iotFencePageParam).then((res) => {
+      const params = new URLSearchParams()
+      const cur = this.iotFencePageParam.current = 1
+      if (this.fenceName !== '') {
+        params.append('name', this.fenceName)
+      }
+      params.append('current', cur)
+
+      getFence(params).then((res) => {
         this.fenceList = res.data.data.records.map((obj) => {
           return {
             id: obj.id,
@@ -175,9 +171,14 @@ export default {
     },
     // 获取所有围栏
     getFencePageList() {
-      this.iotFencePageParam.current++
-      // this.iotFencePageParam.name = this.fenceName
-      getFence(this.iotFencePageParam).then((res) => {
+      const params = new URLSearchParams()
+      const cur = this.iotFencePageParam.current++
+      if (this.fenceName !== '') {
+        params.append('name', this.fenceName)
+      }
+      params.append('current', cur)
+
+      getFence(params).then((res) => {
         const temp = res.data.data.records.map((obj) => {
           return {
             id: obj.id,
@@ -188,7 +189,6 @@ export default {
             state: 'idle'
           }
         })
-
         this.count = res.data.data.total
         this.fenceList = [...this.fenceList, ...temp]
       })
