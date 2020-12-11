@@ -30,7 +30,6 @@ import {
 } from 'vue-baidu-map/components'
 import BmPolygonEx from './components/PolygonEx'
 import Fence from './components/fence'
-import { wgs84togcj02, gcj02tobd09 } from '@/utils/coord-transform'
 
 export default {
   components: { BaiduMap, BmPolygonEx, BmCityList, Fence },
@@ -42,11 +41,11 @@ export default {
       mapOptions: {
         ak: '7BvqXd0SNk9NVMTz1DkCAmxO1dhausVe',
         center: {
-          lng: 116.405994,
-          lat: 39.914935
+          lng: 105.484323,
+          lat: 36.716746
         },
         scrollWheelZoom: true,
-        zoom: 20
+        zoom: 5
       },
       polygonData: [{
         path: [],
@@ -85,7 +84,7 @@ export default {
         map.centerAndZoom(viewPort.center, viewPort.zoom)
       } else {
         // 没有坐标就显示在中国
-        map.centerAndZoom(new BMap.Point(116.405994, 39.914935), 20)
+        map.centerAndZoom(new BMap.Point(105.484323, 36.716746), 5)
       }
     },
     doClear() {
