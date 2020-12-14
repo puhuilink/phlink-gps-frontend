@@ -19,7 +19,8 @@
         >
           <div class="top" @click.capture="selectFence(index, item)">
             <p class="img">
-              <img :src="fenceImage" alt="电子围栏">
+              <!-- <img :src="fenceImage" alt="电子围栏"> -->
+              <svg-icon :icon-class="icon" />
             </p>
             <el-input v-if="item.state === 'add'" v-model="addNameInput" placeholder="输入围栏名称" />
             <p v-else class="text">{{ item.name }}</p>
@@ -67,12 +68,12 @@ export default {
   },
   data() {
     return {
+      icon: 'fence',
       count: 0,
       isLoading: false,
       fenceList: [],
       indexAtion: -1,
       fenceName: '',
-      fenceImage: require('@/assets/image/icon_fence.png'), // 电子围栏
       nameEdit: false,
       currentID: '',
       addNameInput: '',
