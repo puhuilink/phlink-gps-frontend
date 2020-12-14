@@ -99,12 +99,10 @@ export default {
     },
     callbakModify(e) {
       console.log('%c map callbakModify', 'color: green;')
-      console.log(e)
       this.editData = e.path
     },
     callbakDelete(e) {
       console.log('%c map callbakDelete', 'color: green;')
-      console.log(e)
     }
   }
 }
@@ -120,6 +118,9 @@ export default {
     }
   }
 
+  .app-container {
+    padding: 0px;
+  }
 </style>
 <style>
   .citylist_popup_main .city_content_top {

@@ -96,7 +96,7 @@ export default {
     }
   },
   mounted() {
-    this.getFencePageList()
+    this.resetFencePageList()
   },
   methods: {
     deleteFence(item) {
@@ -148,11 +148,11 @@ export default {
     resetFencePageList() {
       this.show = false
       const params = new URLSearchParams()
-      const cur = this.iotFencePageParam.current = 1
+      this.iotFencePageParam.current = 1
       if (this.fenceName !== '') {
         params.append('name', this.fenceName)
       }
-      params.append('current', cur)
+      params.append('current', this.iotFencePageParam.current)
 
       getFence(params).then((res) => {
         this.fenceList = res.data.data.records.map((obj) => {
@@ -172,11 +172,11 @@ export default {
     // 获取所有围栏
     getFencePageList() {
       const params = new URLSearchParams()
-      const cur = this.iotFencePageParam.current++
+      this.iotFencePageParam.current = this.iotFencePageParam.current + 1
       if (this.fenceName !== '') {
         params.append('name', this.fenceName)
       }
-      params.append('current', cur)
+      params.append('current', this.iotFencePageParam.current)
 
       getFence(params).then((res) => {
         const temp = res.data.data.records.map((obj) => {
