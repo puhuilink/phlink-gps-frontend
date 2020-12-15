@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { Notification, MessageBox } from 'element-ui'
+import { MessageBox } from 'element-ui'
+import { message } from '../components/ResetMessage/index'
 import store from '@/store'
 import router from '@/router'
 import { getToken } from '@/utils/auth'
@@ -34,15 +35,14 @@ service.interceptors.request.use(
 service.interceptors.response.use(
 
   response => {
-    console.log(response)
+    // console.log(response)
     const code = response.data.code
     if (code === 401) {
       MessageBox.confirm(
-        '登录状态已过期，您可以继续留在该页面，或者重新登录',
+        '登录状态已过期，请重新登录',
         '系统提示',
         {
           confirmButtonText: '重新登录',
-          cancelButtonText: '取消',
           type: 'warning'
         }
       ).then(() => {
@@ -51,10 +51,9 @@ service.interceptors.response.use(
         })
       })
     } else if (code !== 200) {
-      Notification.error({
-        title: response.data.msg,
-        duration: 1000
-      })
+      message.error(
+        response.data.msg
+      )
       return Promise.reject('error')
     } else {
       return response
@@ -66,30 +65,21 @@ service.interceptors.response.use(
       code = error.response.status
     } catch (e) {
       if (error.toString().indexOf('Error: timeout') !== -1) {
-        Notification.error({
-          title: '网络请求超时',
-          duration: 2500
-        })
+        message.error('网络请求超时')
         return Promise.reject(error)
       }
       if (error.toString().indexOf('Error: Network Error') !== -1) {
-        Notification.error({
-          title: '网络请求错误',
-          duration: 2500
-        })
+        message.error('网络请求错误')
         return Promise.reject(error)
       }
     }
     if (code === 504) {
-      Notification.error({
-        title: '服务器异常',
-        duration: 2500
-      })
+      message.error('服务器异常')
       return Promise.reject(error)
     }
     if (code === 401) {
       MessageBox.confirm(
-        '登录状态已过期，您可以继续留在该页面，或者重新登录',
+        '登录状态已过期，是否重新登录?',
         '系统提示',
         {
           confirmButtonText: '重新登录',

@@ -11,8 +11,7 @@
         size="small"
         placeholder="请输入菜单"
       />
-      <el-button class="filter-item" size="small" type="primary" icon="el-icon-search" @click="handleFind">查找
-      </el-button>
+      <el-button class="filter-item" size="small" type="primary" icon="el-icon-search" plain @click="handleFind">搜索</el-button>
       <el-button class="filter-item" size="small" type="primary" icon="el-icon-plus" @click="handleAdd">添加菜单</el-button>
     </div>
 
@@ -83,6 +82,7 @@
       width="40%"
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
+      @close="dialogClosed"
     >
       <el-form
         ref="dataForm"
@@ -92,6 +92,10 @@
         :size="size"
         style="text-align:left;"
       >
+        <el-form-item :label="menuTypeList[dataForm.type] + '名称'" prop="name">
+          <el-input v-model="dataForm.name" :placeholder="menuTypeList[dataForm.type] + '名称'" />
+        </el-form-item>
+
         <el-form-item label="菜单类型" prop="type">
           <el-radio-group v-model="dataForm.type">
             <el-radio v-for="(type, index) in menuTypeList" :key="index" :label="index">{{ type }}</el-radio>
@@ -119,9 +123,6 @@
           </el-popover>
         </el-form-item>
 
-        <el-form-item :label="menuTypeList[dataForm.type] + '名称'" prop="name">
-          <el-input v-model="dataForm.name" :placeholder="menuTypeList[dataForm.type] + '名称'" />
-        </el-form-item>
         <el-form-item label="上级菜单" prop="parentName">
           <popup-tree-input
             :data="popupTreeData"
@@ -130,6 +131,7 @@
             :node-key="''+dataForm.parentId"
             :current-change-handle="handleTreeSelectChange"
           />
+
         </el-form-item>
         <el-form-item v-if="dataForm.type !== 0" label="授权标识" prop="perms">
           <el-input v-model="dataForm.perms" placeholder="如: sys:user:add, sys:user:edit, sys:user:delete" />
@@ -150,8 +152,8 @@
                 <div slot="content">
                   <p>URL格式：</p>
                   <p>1.常规业务开发的功能URL，如用户管理，Views目录下页面路径为 @view/sys/user, 此处填写 sys/user。</p>
-                  <p>2.嵌套外部网页，如通过菜单打开百度网页，此处填写 http://www.baidu.com，http:// 不可省略。</p>
-                  <p>示例：用户管理：/sys/user 嵌套百度：http://www.baidu.com 嵌套网页：http://127.0.0.1:8000</p></div>
+                  <p>2.嵌套外部网页，如通过菜单打开百度网页，此处填写 http://www.puhuilink.com，http:// 不可省略。</p>
+                  <p>示例：用户管理：/sys/user 嵌套百度：http://www.puhuilink.com 嵌套网页：http://127.0.0.1:8000</p></div>
                 <i class="el-icon-warning" />
               </el-tooltip>
             </el-col>
@@ -282,6 +284,9 @@ export default {
   },
 
   methods: {
+    dialogClosed() {
+      this.$refs.dataForm.resetFields()
+    },
     selected(name) {
       this.dataForm.icon = name
     },

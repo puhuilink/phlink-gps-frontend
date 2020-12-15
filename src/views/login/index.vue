@@ -3,12 +3,12 @@
     v-if="isShow"
     v-loading="socialLoading"
     class="login-container"
-    :element-loading-text="'现在进行'+currentPath+'第三方登录,请稍等'"
+    :element-loading-text="'进行'+currentPath+'第三方登录,请稍等'"
   >
     <div class="login-right">
       <div class="title-container">
         <h3 class="title">
-          PRE 权限后台系统登录
+          PRE 后台系统登录
         </h3>
       </div>
       <el-tabs v-model="activeName" @tab-click="handleClick">
@@ -216,9 +216,7 @@
           <span class="" @click="gotoRegister()">注册账户</span>
         </div>
       </div>
-
     </div>
-
   </div>
 </template>
 
@@ -290,7 +288,7 @@ export default {
   },
   created() {
     this.refreshCaptcha()
-    this.socialLogin()
+    // this.socialLogin()
   },
   mounted() {
     // 自动加载indexs方法
@@ -311,7 +309,7 @@ export default {
           this.loading = true
           this.$store.dispatch('LoginByUsername', this.loginForm).then(() => {
             this.loading = false
-            this.$router.push({ path: this.redirect || '/' })
+            this.$router.push({ path: this.redirect || '/dashboard' })
           }).catch(() => {
             this.loading = false
             this.refreshCaptcha()
@@ -343,7 +341,7 @@ export default {
     },
     refreshCaptcha: function() {
       getImgCode().then(res => {
-        console.log(res)
+        // console.log(res)
         this.src = res.data.data.img
         this.loginForm.key = res.data.data.key
       })
@@ -426,8 +424,7 @@ export default {
     justify-content: center;
     align-items: center;
     height: 100%;
-    /*background-image: url(https://img2018.cnblogs.com/blog/1211637/201908/1211637-20190809112720089-1507550740.png);*/
-    background-image: url('../../assets/63048029b07252112f0033e8e3c52865.jpg');
+    background-image: url('');
     /*background: red;*/
     background-size: cover;
 
@@ -435,7 +432,7 @@ export default {
       width: 30%;
       padding: 50px;
       border-radius: 6px;
-      background: #ffffff;
+      background: #ebeef5;
 
       .title {
         margin: 0 auto 30px auto;

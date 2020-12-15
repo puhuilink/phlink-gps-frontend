@@ -11,7 +11,7 @@
         placeholder="请输入操作人名称"
         @keyup.enter.native="handleFind"
       />
-      <el-button class="filter-item" type="primary" icon="el-icon-search" size="small" @click="handleFind">查找</el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-search" size="small" plain @click="handleFind">搜索</el-button>
     </div>
 
     <el-table v-loading="loading" :data="tableData" border style="width: 100%">
