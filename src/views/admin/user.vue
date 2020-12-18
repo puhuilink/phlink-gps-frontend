@@ -203,7 +203,7 @@ export default {
       total: 0, // 总数量
       deptId: '',
       dialogFormVisible: false, // 控制弹出框
-      formLabelWidth: '120px',
+      formLabelWidth: '80px',
       query: {
         userName: ''
       },

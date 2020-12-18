@@ -1,10 +1,10 @@
 import request from '@/utils/request'
 
 /*
- * 字典管理模块
+ * 围栏管理模块
  */
 
-// 保存字典
+// 保存围栏
 export const saveFence = (data) => {
   return request({
     url: '/iot-fence',
@@ -12,7 +12,7 @@ export const saveFence = (data) => {
     data: data
   })
 }
-// 获取字典列表
+// 获取围栏列表
 export const getFence = (parms) => {
   return request({
     url: '/iot-fence',
@@ -21,7 +21,7 @@ export const getFence = (parms) => {
   })
 }
 
-// 更新部门
+// 更新围栏
 export const updateFence = (data) => {
   return request({
     url: '/iot-fence',
@@ -29,7 +29,7 @@ export const updateFence = (data) => {
     data: data
   })
 }
-// 根据主键删除字典
+// 根据主键删除围栏
 export const deleteFence = (id) => {
   return request({
     url: '/iot-fence/' + id,

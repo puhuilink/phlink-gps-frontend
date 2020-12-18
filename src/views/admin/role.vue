@@ -159,7 +159,7 @@ export default {
       keyword: '',
       title: '',
       dialogFormVisible: false, // 控制弹出框
-      formLabelWidth: '120px',
+      formLabelWidth: '80px',
       isEditForm: false,
       dateScopes: [{
         id: 1,

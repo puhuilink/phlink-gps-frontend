@@ -194,7 +194,7 @@ export default {
     return {
       size: 'small',
       keyword: '',
-      formLabelWidth: '120px',
+      formLabelWidth: '80px',
       isEditForm: false,
       loading: false,
       dialogVisible: false, // 控制弹出框
