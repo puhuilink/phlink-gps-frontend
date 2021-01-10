@@ -1,4 +1,5 @@
-import { loginByUsername, logout, getUserInfo, loginByUserPhone } from '@/api/login'
+import { loginByUsername, loginByUserPhone } from '@/api/login'
+import { getUserInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { removeTenant } from '@/utils/tenant'
 
@@ -79,14 +80,15 @@ const user = {
           //   reject('Verification failed, please login again.')
           // }
           const data = response.data.data
-          if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-            // 角色
-            commit('SET_ROLES', data.roles)
-          } else {
-            reject('getInfo: roles must be a non-null array!')
-          }
+          // if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
+          // 角色
+          commit('SET_ROLES', ['admin'])
+          // } else {
+          //   reject('getInfo: roles must be a non-null array!')
+          // }
+
           // 名称
-          commit('SET_NAME', data.name)
+          commit('SET_NAME', data.username)
           // 头像
           commit('SET_AVATAR', data.avatar)
           resolve(response)

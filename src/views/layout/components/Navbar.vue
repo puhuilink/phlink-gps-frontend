@@ -5,26 +5,16 @@
     <div class="right-menu">
 
       <template v-if="device!=='mobile'">
-        <!--        <search id="header-search" class="right-menu-item" />-->
-
-        <!--        <error-log class="errLog-container right-menu-item hover-effect" />-->
-
-        <screenfull id="screenfull" class="right-menu-item hover-effect" />
-
+        <screenfull class="right-menu-item hover-effect" />
+        <notifications class="right-menu-item hover-effect" />
       </template>
 
       <!--个人-->
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar" class="user-avatar">
-          <i class="el-icon-caret-bottom" />
+          <el-avatar :size="25">{{ name.substr(0, 1).toUpperCase() }}</el-avatar>
         </div>
         <el-dropdown-menu slot="dropdown">
-          <router-link to="/dashboard">
-            <el-dropdown-item>
-              首页
-            </el-dropdown-item>
-          </router-link>
           <router-link to="/user/center">
             <el-dropdown-item>
               个人中心
@@ -47,17 +37,25 @@ import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import Screenfull from '@/components/Screenfull'
+import Notifications from './Notifications'
 
 export default {
   components: {
     Breadcrumb,
     Hamburger,
-    Screenfull
+    Screenfull,
+    Notifications
+  },
+  data() {
+    return {
+      msgs: []
+    }
   },
   computed: {
     ...mapGetters([
       'sidebar',
       'name',
+      'token',
       'avatar',
       'device'
     ])
@@ -69,7 +67,6 @@ export default {
     toggleSideBar() {
       this.$store.dispatch('toggleSideBar')
     },
-
     // 退出登录
     logout() {
       this.$confirm('是否退出系统, 是否继续?', '提示', {
@@ -125,7 +122,7 @@ export default {
         display: inline-block;
         padding: 0 8px;
         height: 100%;
-        font-size: 18px;
+        font-size: 14px;
         color: #5a5e66;
         vertical-align: text-bottom;
 
@@ -140,24 +137,17 @@ export default {
       }
 
       .avatar-container {
-        margin-right: 30px;
+        margin-right: 10px;
 
         .avatar-wrapper {
-          margin-top: 5px;
+          margin-top: 7px;
           position: relative;
-
-          .user-avatar {
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-          }
 
           .el-icon-caret-bottom {
             cursor: pointer;
             position: absolute;
             right: -20px;
-            top: 25px;
+            top: 15px;
             font-size: 12px;
           }
         }
