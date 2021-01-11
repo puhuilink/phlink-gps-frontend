@@ -59,7 +59,6 @@ export default {
 
         // 点击地图
         map.addEventListener('click', (e) => {
-          console.log('e: ', e)
           if (polygons.length > 0) {
             const polygon = polygons[polygons.length - 1]
             switch (polygon.state) {

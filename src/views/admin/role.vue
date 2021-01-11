@@ -1,5 +1,4 @@
 <template>
-
   <div class="app-container">
     <!-- 查询和其他操作 -->
     <div class="filter-container" style="margin: 10px 0 10px 0;">
@@ -12,12 +11,28 @@
         placeholder="请输入角色名称"
         @keyup.enter.native="handleFind"
       />
-      <el-button class="filter-item" size="small" type="primary" icon="el-icon-search" plain @click="handleFind">搜索
-      </el-button>
-      <el-button class="filter-item" size="small" type="primary" icon="el-icon-refresh" @click="handleReset">重置
-      </el-button>
-      <el-button class="filter-item" size="small" type="primary" icon="el-icon-plus" @click="handleAdd">添加
-      </el-button>
+      <el-button
+        class="filter-item"
+        size="small"
+        type="primary"
+        icon="el-icon-search"
+        plain
+        @click="handleFind"
+      >搜索</el-button>
+      <el-button
+        class="filter-item"
+        size="small"
+        type="primary"
+        icon="el-icon-refresh"
+        @click="handleReset"
+      >重置</el-button>
+      <el-button
+        class="filter-item"
+        size="small"
+        type="primary"
+        icon="el-icon-plus"
+        @click="handleAdd"
+      >添加</el-button>
     </div>
     <el-table v-loading="loading" :data="tableData" border style="width: 100%">
       <el-table-column type="selection" />
@@ -81,8 +96,13 @@
 
         <el-form-item label="数据范围" :label-width="formLabelWidth">
           <el-row>
-            <el-col :span="22">
-              <el-select v-model="form.dsType" placeholder="请选择数据范围" style="width: 100%" @change="changeScope">
+            <el-col :span="23">
+              <el-select
+                v-model="form.dsType"
+                placeholder="请选择数据范围"
+                style="width: 100%"
+                @change="changeScope"
+              >
                 <el-option
                   v-for="item in dateScopes"
                   :key="item.id"
@@ -91,14 +111,26 @@
                 />
               </el-select>
             </el-col>
-            <el-col :span="2" class="icon-list__tips">
+            <el-col :span="1" class="icon-list__tips">
               <el-tooltip placement="top" effect="light" style="padding: 10px;">
                 <div slot="content">
                   <p>数据权限范围类型：</p>
-                  <p>1.&nbsp;<b>[全部]</b> 最高权限，可查看所有数据</p>
-                  <p>2.&nbsp;<b>[本级]</b> 只能查看所处组织机构数据</p>
-                  <p>3.&nbsp;<b>[本级以及子级]</b> 只能查看所在机构和所有下级机构数据</p>
-                  <p>4.&nbsp;<b>[自定义]</b> 在组织机构树上选择数据权限</p>
+                  <p>
+                    1.&nbsp;
+                    <b>[全部]</b> 最高权限，可查看所有数据
+                  </p>
+                  <p>
+                    2.&nbsp;
+                    <b>[本级]</b> 只能查看所处组织机构数据
+                  </p>
+                  <p>
+                    3.&nbsp;
+                    <b>[本级以及子级]</b> 只能查看所在机构和所有下级机构数据
+                  </p>
+                  <p>
+                    4.&nbsp;
+                    <b>[自定义]</b> 在组织机构树上选择数据权限
+                  </p>
                   <p>5.&nbsp;单用户多角色下，系统会选择其中权限最高(全部 > 自定义 > 本级以及子级 > 本级)</p>
                   <p>&nbsp;&nbsp;&nbsp;&nbsp;的角色作为用户的数据权限</p>
                 </div>
@@ -127,22 +159,28 @@
           />
 
           <div style="padding-left:24px;padding-top:12px;">
-            <el-checkbox v-model="checkAll" :disabled="false" @change="handleCheckAll"><b>全选</b></el-checkbox>
+            <el-checkbox v-model="checkAll" :disabled="false" @change="handleCheckAll">
+              <b>全选</b>
+            </el-checkbox>
           </div>
         </el-form-item>
-
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="dialogFormVisible = false">取 消</el-button>
         <el-button size="small" type="primary" @click="submitForm">确 定</el-button>
       </div>
     </el-dialog>
-
   </div>
 </template>
 
 <script>
-import { getRoleList, addRole, updateRole, deleteRole, findRoleMenus } from '@/api/roles'
+import {
+  getRoleList,
+  addRole,
+  updateRole,
+  deleteRole,
+  findRoleMenus
+} from '@/api/roles'
 import { getMenus } from '@/api/menu'
 import { parseTime } from '@/utils/index'
 import { getDeptTree } from '@/api/dept'
@@ -159,24 +197,25 @@ export default {
       keyword: '',
       title: '',
       dialogFormVisible: false, // 控制弹出框
-      formLabelWidth: '120px',
+      formLabelWidth: '80px',
       isEditForm: false,
-      dateScopes: [{
-        id: 1,
-        des: '全部'
-      },
-      {
-        id: 2,
-        des: '本级'
-      },
-      {
-        id: 3,
-        des: '本级以及子级'
-      },
-      {
-        id: 4,
-        des: '自定义'
-      }
+      dateScopes: [
+        {
+          id: 1,
+          des: '全部'
+        },
+        {
+          id: 2,
+          des: '本级'
+        },
+        {
+          id: 3,
+          des: '本级以及子级'
+        },
+        {
+          id: 4,
+          des: '自定义'
+        }
       ],
       deptData: [],
       deptTreeProps: {
@@ -208,9 +247,15 @@ export default {
       menuIds: [],
       // 表单校验
       dataRule: {
-        roleName: [{ required: true, message: '角色名称不能为空', trigger: 'blur' }],
-        roleDesc: [{ required: true, message: '角色介绍不能为空', trigger: 'blur' }],
-        roleCode: [{ required: true, message: '角色标识不能为空', trigger: 'blur' }]
+        roleName: [
+          { required: true, message: '角色名称不能为空', trigger: 'blur' }
+        ],
+        roleDesc: [
+          { required: true, message: '角色介绍不能为空', trigger: 'blur' }
+        ],
+        roleCode: [
+          { required: true, message: '角色标识不能为空', trigger: 'blur' }
+        ]
       },
       loading: false,
       deptIds: []
@@ -238,7 +283,7 @@ export default {
     // 获取菜单树
     findTreeData: function() {
       this.menuLoading = true
-      getMenus().then((res) => {
+      getMenus().then(res => {
         this.menuData = res.data.data
         this.menuLoading = false
       })
@@ -325,7 +370,7 @@ export default {
     // 角色选择改变监听
     handleRoleSelectChange(id) {
       this.selectRole.id = id
-      findRoleMenus(id).then((res) => {
+      findRoleMenus(id).then(res => {
         this.$refs.menuTree.setCheckedNodes(res.data.data)
       })
     },
@@ -371,9 +416,7 @@ export default {
         const depts = []
         if (this.form.dsType === 4) {
           for (let i = 0; i < this.deptIds.length; i++) {
-            depts.push(
-              this.deptIds[i]
-            )
+            depts.push(this.deptIds[i])
           }
           this.form.roleDepts = depts
         }
@@ -424,7 +467,7 @@ export default {
     },
     // 加载部门列表
     findDeptTree: function() {
-      getDeptTree().then((res) => {
+      getDeptTree().then(res => {
         this.deptData = res.data.data
       })
     },

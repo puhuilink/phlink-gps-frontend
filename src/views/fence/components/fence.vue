@@ -159,7 +159,7 @@ export default {
         this.fenceList = res.data.data.records.map((obj) => {
           return {
             id: obj.id,
-            fence: JSON.parse(obj.fence),
+            fence: obj.fence,
             name: obj.name,
             updateTime: obj.updateTime,
             createTime: obj.createTime,
@@ -183,7 +183,7 @@ export default {
         const temp = res.data.data.records.map((obj) => {
           return {
             id: obj.id,
-            fence: JSON.parse(obj.fence),
+            fence: obj.fence,
             name: obj.name,
             updateTime: obj.updateTime,
             createTime: obj.createTime,
@@ -197,7 +197,7 @@ export default {
     addFence() {
       if (this.addNameInput && this.addData.length > 0) {
         const param = {
-          fence: JSON.stringify(this.addData),
+          fence: this.addData,
           name: this.addNameInput
         }
 
@@ -216,7 +216,7 @@ export default {
     updateFence() {
       const param = {
         id: this.currentID,
-        fence: JSON.stringify(this.editData)
+        fence: this.editData
       }
       updateFence(param).then((res) => {
         this.resetFencePageList()

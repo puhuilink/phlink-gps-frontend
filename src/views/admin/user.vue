@@ -140,7 +140,7 @@
 
             </el-form-item>
 
-            <el-form-item label="角色" prop="userRoles" label-width="120px">
+            <el-form-item label="角色" prop="userRoles" :label-width="formLabelWidth">
               <el-select v-model="dataForm.roleList" multiple placeholder="请选择" style="width: 100%;">
                 <el-option
                   v-for="item in roles"
@@ -150,7 +150,7 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label="锁定" prop="lockFlag" label-width="120px">
+            <el-form-item label="锁定" prop="lockFlag" :label-width="formLabelWidth">
               <el-switch
                 v-model="dataForm.lockFlag"
                 active-color="#ff4949"
@@ -203,7 +203,7 @@ export default {
       total: 0, // 总数量
       deptId: '',
       dialogFormVisible: false, // 控制弹出框
-      formLabelWidth: '120px',
+      formLabelWidth: '80px',
       query: {
         userName: ''
       },
