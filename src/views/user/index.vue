@@ -9,9 +9,10 @@
             </div>
             <div class="user-profile">
               <div class="box-center">
-                <pan-thumb :image="avatar" :height="'100px'" :width="'100px'" :hoverable="false">
-                  <el-link type="primary" class="change-avatar" @click="dialogVisible = true">更换头像</el-link>
+                <pan-thumb v-if="user.imageUrl" :image="user.imageUrl" :height="'100px'" :width="'100px'" :hoverable="false">
+                  <!--                  <el-link type="primary" class="change-avatar" @click="dialogVisible = true">更换头像</el-link>-->
                 </pan-thumb>
+                <pan-thumb v-else :image="avatar" :height="'100px'" :width="'100px'" :hoverable="false" />
               </div>
               <div class="box-center">
                 <div class="user-name text-center">{{ user.username }}</div>
@@ -46,16 +47,17 @@
                 <el-form ref="form" :model="user" label-width="80px">
 
                   <el-form-item label="用户名">
-                    <el-input v-model="user.username" />
+                    <el-input v-model="user.username" :disabled="true" />
                   </el-form-item>
                   <el-form-item label="头像">
                     <el-upload
                       class="avatar-uploader"
-                      action="https://jsonplaceholder.typicode.com/posts/"
+                      action
                       :show-file-list="false"
+                      :http-request="handleUploadForm"
                       :before-upload="beforeAvatarUpload"
                     >
-                      <img v-if="user.avatar" :src="user.avatar" class="avatar" alt="">
+                      <img v-if="user.imageUrl" :src="user.imageUrl" height="100" width="100" class="avatar" alt="">
                       <i v-else class="el-icon-plus avatar-uploader-icon" />
                     </el-upload>
                   </el-form-item>
@@ -70,7 +72,7 @@
                   </el-form-item>
 
                   <el-form-item>
-                    <el-button type="primary">提交</el-button>
+                    <el-button type="primary" @click="submitForm('user')">提交</el-button>
                     <el-button>取消</el-button>
                   </el-form-item>
                 </el-form>
@@ -152,7 +154,7 @@
 
 <script>
 import PanThumb from '@/components/PanThumb'
-import { getUserInfo, updatePass, resetEmail, updateEmail } from '@/api/user'
+import { getUserInfo, getUserImageUrl, editInfo, uploadAvatar, updatePass, resetEmail, updateEmail } from '@/api/user'
 
 export default {
   name: 'Index',
@@ -180,6 +182,7 @@ export default {
     return {
       user: {
         avatar: '',
+        imageUrl: '',
         username: '',
         phone: 0,
         email: '',
@@ -360,12 +363,20 @@ export default {
       }, 300)
     },
     submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert('submit!')
+      const params = new URLSearchParams()
+      params.append('phone', this.user.phone) // 额外参数
+      params.append('avatar', this.user.avatar)
+      editInfo(params).then(response => {
+        if (response.data.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '操作成功'
+          })
         } else {
-          console.log('error submit!!')
-          return false
+          this.$message({
+            type: 'error',
+            message: response.data.msg
+          })
         }
       })
     },
@@ -377,29 +388,38 @@ export default {
     handleClick(tab, event) {
       console.log(tab, event)
     },
-
-    // handleAvatarSuccess(res, file) {
-    //   // this.imageUrl = URL.createObjectURL(file.raw)
-    //   const data = new FormData()
-    //   data.append('token', '')
-    //   data.append('file', file[0])
-    //   axiosInstance({
-    //     method: 'POST',
-    //     url: 'http://up.qiniu.com',
-    //     data: data
-    //   })
-    //     .then(function(res) {
-    //       // console.log('res',res)
-    //       const { base_url, path } = res.data
-    //       // 页面所用字段
-    //       self.previewAvatar = `${base_url}${path}?imageView2/1/w/154/h/154`
-    //       // 传给后台不完整
-    //       self.formData.avatar = `${path}`
-    //     })
-    //     .catch(function(err) {
-    //       console.log('err', err)
-    //     })
-    // },
+    handleUploadForm(param) {
+      const formData = new FormData()
+      formData.append('batchFileUUID', this.guid()) // 额外参数
+      formData.append('file', param.file)
+      formData.append('bizType', 'sys:user:uploadAvatar')
+      formData.append('bizId', '001')
+      const loading = this.$loading({
+        lock: true,
+        text: '上传中，请稍候...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
+      uploadAvatar(formData).then((res) => {
+        if (res.data.code == 200) {
+          this.user.avatar = res.data.data.id
+          getUserImageUrl(parseInt(res.data.data.id)).then((res) => {
+            this.user.imageUrl = res.data.data
+          })
+          this.$message.info('上传成功!')
+        } else {
+          this.$message.error('上传失败!')
+        }
+      })
+      loading.close()
+    },
+    guid() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0
+        var v = c == 'x' ? r : (r & 0x3 | 0x8)
+        return v.toString(16)
+      })
+    },
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg'
       const isLt2M = file.size / 1024 / 1024 < 2
@@ -427,7 +447,7 @@ export default {
   }
 
   .user-center{
-    height: 440px;
+    height: 540px;
   }
   .box-center {
     margin: 0 auto;

@@ -27,6 +27,14 @@ export function editUser(data) {
   })
 }
 
+export function editInfo(params) {
+  return request({
+    url: '/user/editInfo',
+    method: 'put',
+    params: params
+  })
+}
+
 // 重置密码
 export function restPass(id) {
   return request({
@@ -48,6 +56,22 @@ export function getUserInfo() {
   return request({
     url: '/user/info',
     method: 'get'
+  })
+}
+
+// 获取用户头像
+export function getUserImageUrl(params) {
+  return request({
+    url: '/user/getImageUrl?fileId=' + params,
+    method: 'get'
+  })
+}
+
+export function uploadAvatar(data) {
+  return request({
+    url: '/sys-file/upload',
+    method: 'post',
+    data: data
   })
 }
 
