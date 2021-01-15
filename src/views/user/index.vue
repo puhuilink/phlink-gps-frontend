@@ -154,8 +154,9 @@
 
 <script>
 import PanThumb from '@/components/PanThumb'
-import { getUserInfo, getUserImageUrl, editInfo, uploadAvatar, updatePass, resetEmail, updateEmail } from '@/api/user'
-
+import { getUserInfo, getUserImageUrl, editInfo, updatePass, resetEmail, updateEmail } from '@/api/user'
+import { guid } from '@/utils/webUtils'
+import { upload } from '@/api/fileupload'
 export default {
   name: 'Index',
   components: { PanThumb },
@@ -390,8 +391,8 @@ export default {
     },
     handleUploadForm(param) {
       const formData = new FormData()
-      formData.append('batchFileUUID', this.guid()) // 额外参数
-      formData.append('file', param.file)
+      formData.append('batchFileUUID', guid()) // 额外参数
+      formData.append('files', param.file)
       formData.append('bizType', 'sys:user:uploadAvatar')
       formData.append('bizId', '001')
       const loading = this.$loading({
@@ -400,10 +401,10 @@ export default {
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)'
       })
-      uploadAvatar(formData).then((res) => {
+      upload(formData).then((res) => {
         if (res.data.code == 200) {
-          this.user.avatar = res.data.data.id
-          getUserImageUrl(parseInt(res.data.data.id)).then((res) => {
+          this.user.avatar = res.data.data[0].id
+          getUserImageUrl(parseInt(res.data.data[0].id)).then((res) => {
             this.user.imageUrl = res.data.data
           })
           this.$message.info('上传成功!')
@@ -412,13 +413,6 @@ export default {
         }
       })
       loading.close()
-    },
-    guid() {
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = Math.random() * 16 | 0
-        var v = c == 'x' ? r : (r & 0x3 | 0x8)
-        return v.toString(16)
-      })
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg'

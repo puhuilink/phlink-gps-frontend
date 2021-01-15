@@ -51,10 +51,14 @@ service.interceptors.response.use(
         })
       })
     } else if (code !== 200) {
-      message.error(
-        response.data.msg
-      )
-      return Promise.reject('error')
+      if (response.data.type == 'application/octet-stream') {
+        return response
+      } else {
+        message.error(
+          response.data.msg
+        )
+        return Promise.reject('error')
+      }
     } else {
       return response
     }

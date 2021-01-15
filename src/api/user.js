@@ -67,14 +67,6 @@ export function getUserImageUrl(params) {
   })
 }
 
-export function uploadAvatar(data) {
-  return request({
-    url: '/sys-file/upload',
-    method: 'post',
-    data: data
-  })
-}
-
 // 修改密码
 export function updatePass(parms) {
   return request({
