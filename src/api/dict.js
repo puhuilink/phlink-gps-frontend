@@ -29,14 +29,22 @@ export const queryDictItemList = (parms) => {
     params: parms
   })
 }
-export const queryDictItemByDictName = (dictName) => {
+export const queryDictItemByDictCode = (dictCode) => {
   return request({
-    url: '/dict/queryDictItemByDictName/' + dictName,
+    url: '/dict/queryDictItemByDictCode/' + dictCode,
     method: 'get'
   })
 }
 
-// 更新部门
+export const queryDictItemByDictCodes = (dictCodes) => {
+  return request({
+    url: '/dict/queryDictItemByDictCodes',
+    method: 'get',
+    params: dictCodes
+  })
+}
+
+// 更新字典
 export const updateDict = (data) => {
   return request({
     url: '/dict',

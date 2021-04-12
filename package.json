@@ -27,8 +27,12 @@
     "admin-template"
   ],
   "dependencies": {
+    "@amap/amap-vue": "^2.0.10",
     "@riophae/vue-treeselect": "^0.0.38",
     "axios": "0.18.0",
+    "bpmn-js": "^7.2.1",
+    "bpmn-js-properties-panel": "^0.34.0",
+    "bpmn-moddle": "^6.0.0",
     "clipboard": "1.7.1",
     "codemirror": "5.39.2",
     "driver.js": "0.8.1",
@@ -36,6 +40,7 @@
     "echarts": "4.1.0",
     "element-ui": "2.13.0",
     "file-saver": "1.3.8",
+    "form-making": "^1.2.9",
     "fuse.js": "3.4.2",
     "gulp": "^4.0.2",
     "gulp-util": "latest",
@@ -52,10 +57,12 @@
     "sortablejs": "1.7.0",
     "tui-editor": "1.2.7",
     "vue": "2.5.17",
+    "vue-clipboard2": "^0.3.1",
     "vue-count-to": "1.0.13",
     "vue-i18n": "7.3.2",
     "vue-router": "3.0.2",
     "vue-splitpane": "1.0.2",
+    "vue2-ace-editor": "0.0.15",
     "vuedraggable": "^2.16.0",
     "vuex": "3.0.1",
     "xlsx": "^0.11.16"
@@ -128,5 +135,8 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "babel": {
+    "sourceType": "unambiguous"
+  }
 }
