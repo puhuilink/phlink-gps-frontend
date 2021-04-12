@@ -69,6 +69,26 @@ export const constantRoutes = [
         meta: { title: '个人中心', icon: 'user' }
       }
     ]
+  },
+  {
+    path: '/popup',
+    component: Layout,
+    hidden: true,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: 'formEdit',
+        component: () => import('@/views/flowable/form/edit'),
+        name: '表单编辑器',
+        meta: { title: '修改表单', icon: 'edit' }
+      },
+      {
+        path: 'modelEdit',
+        component: () => import('@/views/flowable/model/edit'),
+        name: '模型编辑器',
+        meta: { title: '修改模型', icon: 'edit' }
+      }
+    ]
   }
 ]
 

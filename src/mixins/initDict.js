@@ -1,4 +1,4 @@
-import { queryDictItemByDictName } from '@/api/dict'
+import { queryDictItemByDictCode } from '@/api/dict'
 
 export default {
   data() {
@@ -9,7 +9,7 @@ export default {
   methods: {
     async getDict(dictName) {
       return new Promise((resolve, reject) => {
-        queryDictItemByDictName(dictName).then(res => {
+        queryDictItemByDictCode(dictName).then(res => {
           this.dicts = res.data.data
           resolve(res)
         }).catch(err => {

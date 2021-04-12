@@ -160,7 +160,6 @@ export default {
       params.append('current', this.currentPage)
       params.append('size', this.pageSize)
       getDict(params).then(res => {
-        console.log(res)
         this.data = res.data.data.records
         this.total = res.data.data.total
         this.loading = false

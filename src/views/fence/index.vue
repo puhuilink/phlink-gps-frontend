@@ -1,129 +1,172 @@
 <template>
   <div class="app-container">
-    <el-row>
-      <el-col :span="6">
-        <fence
-          :add-data="saveData"
-          :edit-data="editData"
-          @transferfence="doClick"
-          @delfence="doClear"
-        />
-      </el-col>
-      <el-col :span="18">
-        <baidu-map v-bind="mapOptions" :map-click="false" :style="select" class="map-container" @ready="handler">
-          <bm-polygon-ex
-            :polygon-data="polygonData"
-            @drawover="callbakAdd"
-            @modifyover="callbakModify"
-            @delete="callbakDelete"
-          />
-          <bm-city-list anchor="BMAP_ANCHOR_TOP_LEFT" />
-        </baidu-map>
-      </el-col>
-    </el-row>
+    <div class="top-home-rank">
+    <amap ref="map"
+          cacheKey="map"
+          view-mode="3D"
+          map-style="amap://styles/whitesmoke"
+          async
+          :rotation="0"
+          :pitch="0"
+          >
+    <template v-slot:control>
+      <el-form :inline="true" class="controls">
+        <el-form-item>
+          <el-select v-model="fenceName"
+                     placeholder="选择或查询围栏"
+                     filterable="true"
+                     clearable
+                     v-loadmore="loadmore"
+                     :remote-method="searchFence"
+                     size="mini"
+                     @change="change">
+              <el-option
+                v-for="(item) in fences"
+                :key="item.id"
+                :label="item.name"
+                :value="item.fence"
+                > 
+                <span style="float: left; font-weight: bold">{{ item.name }}</span>
+              </el-option>
+          </el-select>
+          <el-button-group>
+            <el-tooltip content="添加围栏" placement="top" effect="light">
+              <el-button size="mini" icon="el-icon-plus"></el-button>
+            </el-tooltip>
+            <el-tooltip content="删除围栏" placement="top" effect="light">
+              <el-button size="mini" icon="el-icon-minus"></el-button>
+            </el-tooltip>
+          </el-button-group>
+        </el-form-item>
+        <el-form-item>
+          <el-checkbox v-model="editable" label="编辑" size="mini" border/>
+        </el-form-item>
+      </el-form>
+      <el-form class="info" inline="true">
+        <el-form-item label="面积:" v-show="area > 0">
+          {{ (area / 1000000).toFixed(4) }} k㎡
+        </el-form-item>
+        <el-form-item v-show="area > 0">
+            <el-popover
+              placement="bottom"
+              title="围栏原始数据"
+              width="200"
+              trigger="click">
+              <el-input type="textarea" v-model="fenceLatlag" rows="10" readonly></el-input>
+              <el-button slot="reference" size="mini" icon="el-icon-document-copy" circle></el-button>
+            </el-popover>
+        </el-form-item>
+        <el-form-item label="卫星图">
+          <el-switch v-model="satellite" />
+        </el-form-item>
+      </el-form>
+      <amap-satellite-layer :visible="satellite" />
+    </template>
+    <template v-slot:map-content>
+      <amap-polygon
+        ref="polygons"
+        :path.sync="path"
+        :fill-color="fill"
+        :fill-opacity="0.01"
+        :stroke-color="stroke"
+        :editable="editable"
+      />
+    </template>
+    </amap>
+    </div>
   </div>
 </template>
+
 <script>
-import {
-  BaiduMap,
-  BmCityList
-} from 'vue-baidu-map/components'
-import BmPolygonEx from './components/PolygonEx'
-import Fence from './components/fence'
+import Amap from '@amap/amap-vue/lib/amap';
+import Polygon from '@amap/amap-vue/lib/polygon';
+import SatelliteLayer from '@amap/amap-vue/lib/satellite-layer';
+import { saveFence, getFence, updateFence, deleteFence } from '@/api/fence'
 
 export default {
-  components: { BaiduMap, BmPolygonEx, BmCityList, Fence },
+  components: {
+    Amap,
+    'AmapPolygon': Polygon,
+    'AmapSatelliteLayer': SatelliteLayer
+  },
   data() {
     return {
-      map: {},
-      saveData: [],
-      editData: [],
-      mapOptions: {
-        ak: '7BvqXd0SNk9NVMTz1DkCAmxO1dhausVe',
-        center: {
-          lng: 105.484323,
-          lat: 36.716746
-        },
-        scrollWheelZoom: true,
-        zoom: 5
-      },
-      polygonData: [{
-        path: [],
-        value: 0
-      }],
-      select: { width: '100%', height: '' }
-
+      fences: [],
+      fenceName: null,
+      path: null,
+      editable: true,
+      satellite: false,
+      fill: '#40a9ff',
+      stroke: '#000A58'
+    }
+  },
+  computed: {
+    $map() {
+      return this.$refs.map.$map
+    },
+    area() {
+      if(this.path) {
+        return window.AMap.GeometryUtil.ringArea(this.path)
+      }
+    },
+    fenceLatlag() {
+      return JSON.stringify(this.path, undefined, 4)
     }
   },
   mounted() {
-    this.selectStyle()
+    this.searchFence()
   },
   methods: {
-    selectStyle() {
-      this.select.height = (window.innerHeight) - 100 + 'px'
+    searchFence(query) {
+      const params = new URLSearchParams()
+      if(query) {
+        params.append('name', query)
+      }
+      params.append('current', 1)
+
+      setTimeout(() => {
+        getFence(params).then((res) => {
+          let fenceList = res.data.data.records.map((obj) => {
+            return {
+              id: obj.id,
+              fence: obj.fence,
+              name: obj.name,
+              updateTime: obj.updateTime,
+              createTime: obj.createTime
+            }
+          })
+          this.fences = fenceList
+        })}, 500)
     },
-    handler({ BMap, map }) {
-      // TODO 现在支持一个多边形围栏
-      this.setViewPort(map, this.polygonData[0].path)
-      this.map = map
-    },
-    doClick(path) {
-      console.log('%c doClick', 'color: blue;')
-      this.polygonData = [{
-        path: path,
-        value: 0
-      }]
-      this.setViewPort(this.map, path)
-    },
-    setViewPort(map, path) {
-      // 调用百度地图方法设置坐标数组居中和缩放
-      if (path.length > 0) {
-        const viewPort = map.getViewport(path.map(p => {
-          return new BMap.Point(p.lng, p.lat)
-        }))
-        map.centerAndZoom(viewPort.center, viewPort.zoom)
-      } else {
-        // 没有坐标就显示在中国
-        map.centerAndZoom(new BMap.Point(105.484323, 36.716746), 5)
+    change(fence) {
+      if (fence) {
+        this.path = fence.map((d) => {
+          return new AMap.LngLat(d.lng, d.lat)
+        })
+        this.setFitView(this.$map)
       }
     },
-    doClear() {
-      this.polygonData = [{
-        path: [],
-        value: 0
-      }]
-    },
-    callbakAdd(e) {
-      console.log('%c map callbakAdd', 'color: green;')
-      this.saveData = e.path
-    },
-    callbakModify(e) {
-      console.log('%c map callbakModify', 'color: green;')
-      this.editData = e.path
-    },
-    callbakDelete(e) {
-      console.log('%c map callbakDelete', 'color: green;')
+    async setFitView(map) {
+      await this.$nextTick()
+      const target = this.$refs.polygons.$target
+      map.setFitView(target)
     }
   }
 }
 </script>
-<style rel="stylesheet/scss" lang="scss" scoped>
-  .map-container {
-    >>> .anchorBL,
-    >>> .anchorTR,
-    >>> .BMap_zlHolder,
-    >>> [id^=PanoramaFlashWraperTANGRAM] {
-        display: none;
-        visibility: hidden;
-    }
-  }
 
-  .app-container {
-    padding: 0px;
+<style lang="scss" scoped>
+  .top-home-rank {
+    height: 550px;
   }
-</style>
-<style>
-  .citylist_popup_main .city_content_top {
-    height: 40px!important;
+  .controls {
+    position: absolute;
+    left: 6px;
+    top: 0px;
+  }
+  .info {
+    position: absolute;
+    right: 6px;
+    top: 0;
   }
 </style>

@@ -57,6 +57,12 @@
               </template>
             </el-table-column>
 
+            <el-table-column label="真实姓名" align="center">
+              <template slot-scope="scope">
+                <span>{{ scope.row.realname }}</span>
+              </template>
+            </el-table-column>
+
             <el-table-column label="手机号" align="center">
               <template slot-scope="scope">
                 <span>{{ scope.row.phone }}</span>
@@ -119,6 +125,10 @@
           <el-form ref="ruleForm" :model="dataForm" :rules="rules2" label-width="80px" size="small" label-position="right">
             <el-form-item label="用户名" :label-width="formLabelWidth" prop="username">
               <el-input v-model="dataForm.username" auto-complete="off" placeholder="请输入用户名" />
+            </el-form-item>
+
+            <el-form-item label="姓名" :label-width="formLabelWidth" prop="realname">
+              <el-input v-model="dataForm.realname" auto-complete="off" placeholder="请输入姓名" />
             </el-form-item>
 
             <el-form-item label="邮箱" :label-width="formLabelWidth" prop="email">
@@ -242,7 +252,7 @@ export default {
     this.findUserRoles()
     this.findDeptTree()
     // 加载数据字典
-    this.getDict('用户状态')
+    this.getDict('lock_flag')
   },
   methods: {
     dialogClosed() {

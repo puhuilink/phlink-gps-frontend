@@ -35,7 +35,6 @@ service.interceptors.request.use(
 service.interceptors.response.use(
 
   response => {
-    // console.log(response)
     const code = response.data.code
     if (code === 401) {
       MessageBox.confirm(
@@ -51,7 +50,7 @@ service.interceptors.response.use(
         })
       })
     } else if (code !== 200) {
-      if (response.data.type == 'application/octet-stream') {
+      if (response.data.type === 'application/octet-stream') {
         return response
       } else {
         message.error(
